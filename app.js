@@ -25,7 +25,6 @@ app.engine('handlebars', exphbs({defaultLayout: 'layout'}));
 app.set('view engine', 'handlebars');
 
 // Middleware
-// todo understand this stuff
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
@@ -34,6 +33,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Express session
+// todo understand session params
 app.use(session({
   secret: 'secret',
   saveUninitialized : true,
@@ -41,13 +41,15 @@ app.use(session({
 }));
 
 // Passport init
+// todo understand how passport works
 app.use(passport.initialize());
 app.use(passport.session());
 
 // Express Validator
-// todo understand this stuff
+// todo understand how errorFormatter works
 app.use(expressValidator({
   errorFormatter: function(param, msg, value) {
+    debugger;
     let namespace = param.split('.'),
       root = namespace.shift(),
       formParam = root;
@@ -66,11 +68,11 @@ app.use(expressValidator({
 app.use(flash());
 
 // Global variables
-// todo understand this stuff
 app.use((req, res, next) => {
   res.locals.success_msg = req.flash('success_msg');
   res.locals.error_msg = req.flash('error_msg');
   res.locals.error = req.flash('error');
+  res.locals.user = req.user || null;
   next();
 });
 

@@ -19,12 +19,27 @@ const UserSchema = mongoose.Schema({
 
 const User = module.exports = mongoose.model('User', UserSchema);
 
-// todo understand this
 module.exports.createUser = (newUser, callback) => {
   bcrypt.genSalt(10, function (err, salt) {
     bcrypt.hash(newUser.password, salt, function (err, hash) {
       newUser.password = hash;
       newUser.save(callback);
     });
+  });
+};
+
+module.exports.getUserByName = (username, callback) => {
+  const query = {username};
+  User.findOne(query, callback);
+};
+
+module.exports.getUserById = (id, callback) => {
+  User.findById(id, callback);
+};
+
+module.exports.comparePassword = (candidatePassword, hash, callback) => {
+  bcrypt.compare(candidatePassword, hash, (err, isMatch) => {
+    if (err) throw err;
+    callback(null, isMatch);
   });
 };
